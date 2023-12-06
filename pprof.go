@@ -1,10 +1,11 @@
 package echopprof
 
 import (
+	"net/http"
 	"net/http/pprof"
 	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v5"
 )
 
 // Wrap adds several routes from package `net/http/pprof` to *echo.Echo object.
@@ -20,28 +21,23 @@ func WrapGroup(prefix string, g *echo.Group) {
 		Path    string
 		Handler echo.HandlerFunc
 	}{
-		{"GET", "", IndexHandler()},
-		{"GET", "/", IndexHandler()},
-		{"GET", "/goroutine", GoroutineHandler()},
-		{"GET", "/heap", HeapHandler()},
-		{"GET", "/allocs", AllocHandler()},
-		{"GET", "/threadcreate", ThreadCreateHandler()},
-		{"GET", "/block", BlockHandler()},
-		{"GET", "/mutex", MutexHandler()},
-		{"GET", "/cmdline", CmdlineHandler()},
-		{"GET", "/profile", ProfileHandler()},
-		{"GET", "/symbol", SymbolHandler()},
-		{"POST", "/symbol", SymbolHandler()},
-		{"GET", "/trace", TraceHandler()},
+		{http.MethodGet, "", IndexHandler()},
+		{http.MethodGet, "/", IndexHandler()},
+		{http.MethodGet, "/goroutine", GoroutineHandler()},
+		{http.MethodGet, "/heap", HeapHandler()},
+		{http.MethodGet, "/allocs", AllocHandler()},
+		{http.MethodGet, "/threadcreate", ThreadCreateHandler()},
+		{http.MethodGet, "/block", BlockHandler()},
+		{http.MethodGet, "/mutex", MutexHandler()},
+		{http.MethodGet, "/cmdline", CmdlineHandler()},
+		{http.MethodGet, "/profile", ProfileHandler()},
+		{http.MethodGet, "/symbol", SymbolHandler()},
+		{http.MethodPost, "/symbol", SymbolHandler()},
+		{http.MethodGet, "/trace", TraceHandler()},
 	}
 
 	for _, r := range routers {
-		switch r.Method {
-		case "GET":
-			g.GET(strings.TrimPrefix(r.Path, prefix), r.Handler)
-		case "POST":
-			g.POST(strings.TrimPrefix(r.Path, prefix), r.Handler)
-		}
+		g.Add(r.Method, strings.TrimPrefix(r.Path, prefix), r.Handler)
 	}
 }
 

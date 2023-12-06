@@ -1,8 +1,8 @@
 package echopprof_test
 
 import (
-	echopprof "github.com/SkYNewZ/echo-pprof/v4"
-	"github.com/labstack/echo/v4"
+	echopprof "github.com/SkYNewZ/echo-pprof/v5"
+	"github.com/labstack/echo/v5"
 )
 
 func ExampleWrap() {

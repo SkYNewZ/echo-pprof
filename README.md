@@ -2,11 +2,12 @@
 A wrapper for [Echo web framework](https://github.com/labstack/echo) to use `net/http/pprof` easily.
 
 Forked from [sevenNt/echo-pprof](https://github.com/sevenNt/echo-pprof).
+Support for Echo [v4](https://github.com/SkYNewZ/echo-pprof/releases/tag/v4) and [v4](https://github.com/SkYNewZ/echo-pprof/releases/tag/v5).
 
 ## Install
 
 ```sh
-go get -u github.com/SkYNewZ/echo-pprof/v4
+go get -u github.com/SkYNewZ/echo-pprof/v5
 ```
 
 ## Usage
@@ -15,8 +16,8 @@ go get -u github.com/SkYNewZ/echo-pprof/v4
 package main
 
 import (
-	"github.com/SkYNewZ/echo-pprof/v4"
-	"github.com/labstack/echo/v4"
+	"github.com/SkYNewZ/echo-pprof/v5"
+	"github.com/labstack/echo/v5"
 )
 
 func main() {
