@@ -35,15 +35,16 @@ func TestWrap(t *testing.T) {
 	expectedRouters := map[string]string{
 		"/debug/pprof":              "IndexHandler",
 		"/debug/pprof/":             "IndexHandler",
-		"/debug/pprof/heap":         "HeapHandler",
 		"/debug/pprof/goroutine":    "GoroutineHandler",
-		"/debug/pprof/block":        "BlockHandler",
+		"/debug/pprof/heap":         "HeapHandler",
+		"/debug/pprof/allocs":       "AllocHandler",
 		"/debug/pprof/threadcreate": "ThreadCreateHandler",
+		"/debug/pprof/block":        "BlockHandler",
+		"/debug/pprof/mutex":        "MutexHandler",
 		"/debug/pprof/cmdline":      "CmdlineHandler",
 		"/debug/pprof/profile":      "ProfileHandler",
 		"/debug/pprof/symbol":       "SymbolHandler",
 		"/debug/pprof/trace":        "TraceHandler",
-		"/debug/pprof/mutex":        "MutexHandler",
 	}
 
 	checkRouters(e.Routes(), t, expectedRouters)
@@ -58,15 +59,16 @@ func TestWrapGroup(t *testing.T) {
 		baseRouters := map[string]string{
 			"":              "IndexHandler",
 			"/":             "IndexHandler",
-			"/heap":         "HeapHandler",
 			"/goroutine":    "GoroutineHandler",
-			"/block":        "BlockHandler",
+			"/heap":         "HeapHandler",
+			"/allocs":       "AllocHandler",
 			"/threadcreate": "ThreadCreateHandler",
+			"/block":        "BlockHandler",
+			"/mutex":        "MutexHandler",
 			"/cmdline":      "CmdlineHandler",
 			"/profile":      "ProfileHandler",
 			"/symbol":       "SymbolHandler",
 			"/trace":        "TraceHandler",
-			"/mutex":        "MutexHandler",
 		}
 		expectedRouters := make(map[string]string, len(baseRouters))
 		for r, h := range baseRouters {

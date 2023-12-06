@@ -13,6 +13,7 @@ func Wrap(e *echo.Echo) {
 }
 
 // WrapGroup adds several routes from package `net/http/pprof` to *echo.Group object.
+// Supported profiles from https://pkg.go.dev/runtime/pprof#Profile
 func WrapGroup(prefix string, g *echo.Group) {
 	routers := []struct {
 		Method  string
@@ -21,16 +22,17 @@ func WrapGroup(prefix string, g *echo.Group) {
 	}{
 		{"GET", "", IndexHandler()},
 		{"GET", "/", IndexHandler()},
-		{"GET", "/heap", HeapHandler()},
 		{"GET", "/goroutine", GoroutineHandler()},
-		{"GET", "/block", BlockHandler()},
+		{"GET", "/heap", HeapHandler()},
+		{"GET", "/allocs", AllocHandler()},
 		{"GET", "/threadcreate", ThreadCreateHandler()},
+		{"GET", "/block", BlockHandler()},
+		{"GET", "/mutex", MutexHandler()},
 		{"GET", "/cmdline", CmdlineHandler()},
 		{"GET", "/profile", ProfileHandler()},
 		{"GET", "/symbol", SymbolHandler()},
 		{"POST", "/symbol", SymbolHandler()},
 		{"GET", "/trace", TraceHandler()},
-		{"GET", "/mutex", MutexHandler()},
 	}
 
 	for _, r := range routers {
@@ -51,6 +53,14 @@ func IndexHandler() echo.HandlerFunc {
 	}
 }
 
+// GoroutineHandler will pass the call from /debug/pprof/goroutine to pprof.
+func GoroutineHandler() echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		pprof.Handler("goroutine").ServeHTTP(ctx.Response().Writer, ctx.Request())
+		return nil
+	}
+}
+
 // HeapHandler will pass the call from /debug/pprof/heap to pprof.
 func HeapHandler() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
@@ -59,10 +69,18 @@ func HeapHandler() echo.HandlerFunc {
 	}
 }
 
-// GoroutineHandler will pass the call from /debug/pprof/goroutine to pprof.
-func GoroutineHandler() echo.HandlerFunc {
+// AllocHandler will pass the call from /debug/pprof/allocs to pprof.
+func AllocHandler() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		pprof.Handler("goroutine").ServeHTTP(ctx.Response().Writer, ctx.Request())
+		pprof.Handler("allocs").ServeHTTP(ctx.Response().Writer, ctx.Request())
+		return nil
+	}
+}
+
+// ThreadCreateHandler will pass the call from /debug/pprof/threadcreate to pprof.
+func ThreadCreateHandler() echo.HandlerFunc {
+	return func(ctx echo.Context) error {
+		pprof.Handler("threadcreate").ServeHTTP(ctx.Response().Writer, ctx.Request())
 		return nil
 	}
 }
@@ -75,10 +93,10 @@ func BlockHandler() echo.HandlerFunc {
 	}
 }
 
-// ThreadCreateHandler will pass the call from /debug/pprof/threadcreate to pprof.
-func ThreadCreateHandler() echo.HandlerFunc {
+// MutexHandler will pass the call from /debug/pprof/mutex to pprof.
+func MutexHandler() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
-		pprof.Handler("threadcreate").ServeHTTP(ctx.Response().Writer, ctx.Request())
+		pprof.Handler("mutex").ServeHTTP(ctx.Response().Writer, ctx.Request())
 		return nil
 	}
 }
@@ -111,14 +129,6 @@ func SymbolHandler() echo.HandlerFunc {
 func TraceHandler() echo.HandlerFunc {
 	return func(ctx echo.Context) error {
 		pprof.Trace(ctx.Response().Writer, ctx.Request())
-		return nil
-	}
-}
-
-// MutexHandler will pass the call from /debug/pprof/mutex to pprof.
-func MutexHandler() echo.HandlerFunc {
-	return func(ctx echo.Context) error {
-		pprof.Handler("mutex").ServeHTTP(ctx.Response().Writer, ctx.Request())
 		return nil
 	}
 }
